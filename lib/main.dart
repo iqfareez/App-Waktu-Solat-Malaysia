@@ -35,10 +35,11 @@ void main() async {
 
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
 
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key key}) : super(key: key);
   final _primaryColour = Colors.teal;
 
   @override
@@ -68,10 +69,9 @@ class MyApp extends StatelessWidget {
                 visualDensity: VisualDensity.adaptivePlatformDensity,
                 appBarTheme: AppBarTheme(color: _primaryColour.shade800)),
             themeMode: value.themeMode,
-            // home: OnboardingPage(),
             home: GetStorage().read(kIsFirstRun)
-                ? OnboardingPage()
-                : MyHomePage(),
+                ? const OnboardingPage()
+                : const MyHomePage(),
           );
         },
       ),
@@ -80,6 +80,8 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatelessWidget {
+  const MyHomePage({Key key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -92,8 +94,8 @@ class MyHomePage extends StatelessWidget {
         centerTitle: true,
         toolbarHeight: 50,
       ),
-      bottomNavigationBar: MyBottomAppBar(),
-      floatingActionButton: ShareFAB(),
+      bottomNavigationBar: const MyBottomAppBar(),
+      floatingActionButton: const ShareFAB(),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       body: SingleChildScrollView(child: AppBody()),
     );
@@ -121,7 +123,7 @@ void initGetStorage() {
 Future<void> _configureLocalTimeZone() async {
   // use for notification
   tz.initializeTimeZones();
-  final String timeZoneName = 'Asia/Kuala_Lumpur';
+  const String timeZoneName = 'Asia/Kuala_Lumpur';
   tz.setLocalLocation(tz.getLocation(timeZoneName));
 }
 

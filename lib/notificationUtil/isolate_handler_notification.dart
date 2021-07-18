@@ -3,6 +3,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:isolate_handler/isolate_handler.dart';
 import 'package:timezone/timezone.dart' as tz;
+import 'package:waktusolatmalaysia/utils/debug_toast.dart';
 import '../CONSTANTS.dart';
 import '../locationUtil/locationDatabase.dart';
 import '../main.dart';
@@ -18,11 +19,8 @@ void schedulePrayNotification(List<dynamic> times) async {
 
   String currentLocation =
       LocationDatabase.getDaerah(GetStorage().read(kStoredGlobalIndex));
-  print(currentLocation);
-
   var currentTime = DateTime.now().millisecondsSinceEpoch;
-
-  var howMuchToSchedule;
+  int howMuchToSchedule;
 
   if (GetStorage().read(kStoredNotificationLimit)) {
     //should limit to 7
@@ -31,11 +29,7 @@ void schedulePrayNotification(List<dynamic> times) async {
     howMuchToSchedule = times.length;
   }
 
-  if (GetStorage().read(kIsDebugMode)) {
-    Fluttertoast.showToast(
-        msg: 'SCHEDULING $howMuchToSchedule notiifcations',
-        backgroundColor: Color(0xFFD17777));
-  }
+  DebugToast.show('SCHEDULING $howMuchToSchedule notifications');
 
   print('howMuchToSchedule is $howMuchToSchedule');
   // for debug dialog
@@ -114,12 +108,6 @@ void schedulePrayNotification(List<dynamic> times) async {
     }
 
     print('Notification scheduled #${i + 1}');
-    print('Subuh @ $subuhTimeEpoch');
-    print('Syuruk @ $syurukTimeEpoch');
-    print('Zohor @ $zuhrTimeEpoch');
-    print('Asar @ $asarTimeEpoch');
-    print('Maghrib @ $maghribTimeEpoch');
-    print('Isyak @ $isyakTimeEpoch');
   }
 
   scheduleAlertNotification(
@@ -134,10 +122,7 @@ void schedulePrayNotification(List<dynamic> times) async {
   );
 
   print('DONE SCHEDULING NOTIFS');
-  if (GetStorage().read(kIsDebugMode)) {
-    Fluttertoast.showToast(
-        msg: 'FINISH SCHEDULE NOTIFS', toastLength: Toast.LENGTH_LONG);
-  }
+  DebugToast.show('FINISH SCHEDULE NOTIFS');
 
   //This timestamp is later used to determine wether notification should be updated or not
   GetStorage()
@@ -160,8 +145,9 @@ startScheduleNotifications(String _remindersAsString) {
 }
 
 void killCurrentScheduleNotifications() {
-  if (isolateHandler.isolates.containsKey('scheduleNotifications'))
+  if (isolateHandler.isolates.containsKey('scheduleNotifications')) {
     isolateHandler.kill('scheduleNotifications');
+  }
 }
 
 void entryPoint(Map<String, dynamic> context) {
